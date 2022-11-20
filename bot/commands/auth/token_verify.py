@@ -43,14 +43,14 @@ class MyStates(StatesGroup):
 
 
 
-@kaino.message_handler(commands=['token'])
+@kaino.message_handler(commands=['token'], chat_types=['private'])
 async def token(message):
     markup = ReplyKeyboardMarkup(one_time_keyboard=True, input_field_placeholder="Selecciona alguna de las opciónes")
     markup.add("Registrar","Cambiar")
     await kaino.set_state(message.from_user.id, MyStates.response, message.chat.id)
     await kaino.reply_to(message, token_text, parse_mode="html", reply_markup=markup)
 
-@kaino.message_handler(state=MyStates.response)
+@kaino.message_handler(state=MyStates.response,  chat_types=['private'])
 async def response_token(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['response'] = message.text
@@ -61,14 +61,14 @@ async def response_token(message):
         else:
            await kaino.reply_to(message, response_error_text, parse_mode="html")
 
-@kaino.message_handler(state=MyStates.token)
+@kaino.message_handler(state=MyStates.token,  chat_types=['private'])
 async def change_token(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['token'] = message.text
         await kaino.reply_to(message, pass_text)
         await kaino.set_state(message.from_user.id, MyStates.password, message.chat.id)
 
-@kaino.message_handler(state=MyStates.password)
+@kaino.message_handler(state=MyStates.password,  chat_types=['private'])
 async def password_token(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         update = True
