@@ -7,12 +7,14 @@ datasource db {
 // generator
 generator client {
   provider             = "prisma-client-py"
-  recursive_type_depth = 5
+  recursive_type_depth = 4
 }
 
 model User {
-  id            Int     @id @default(autoincrement())
-  binance_token String  @unique
-  username      String  @unique
-  money         String  @unique
+  id              Int     @id @default(autoincrement())
+  binance_token   String  @unique
+  binance_secre   String  @unique
+  username        String  @unique
+  password        String
+  money           String
 }
