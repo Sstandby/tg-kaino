@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*
 from bot import kaino
-from bot.common.db.users import register, get_user_info
-# from bot.commmon import register, get_user_token
+from bot.common.db.users import register
 from telebot.types import ReplyKeyboardMarkup
 from telebot.asyncio_handler_backends import State, StatesGroup
 
@@ -15,12 +14,17 @@ token_text = """
 """
 
 change_text = """
-✎ Digite su token, respondiendo este mensaje.
+✎ Digite su API KEY, respondiendo este mensaje.
 ✎ <a href="https://www.binance.com/es/support/faq/c%C3%B3mo-crear-una-api-360002502072">BINANCE API.</a>
 """
 
 pass_text = """
 ✎ Digite su contraseña con la que quiere cifrar su token.
+"""
+
+secret_text = """
+✎ Digite su API SECRET, respondiendo este mensaje.
+✎ <a href="https://www.binance.com/es/support/faq/c%C3%B3mo-crear-una-api-360002502072">BINANCE API.</a>
 """
 
 response_error_text = """
@@ -39,6 +43,7 @@ existing_user_text = """
 class MyStates(StatesGroup):
     response = State()
     token = State()
+    secret = State()
     password = State()
 
 
@@ -65,6 +70,13 @@ async def response_token(message):
 async def change_token(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['token'] = message.text
+        await kaino.reply_to(message, secret_text)
+        await kaino.set_state(message.from_user.id, MyStates.secret, message.chat.id)
+
+@kaino.message_handler(state=MyStates.secret,  chat_types=['private'])
+async def change_secret(message):
+    async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
+        data['secret'] = message.text
         await kaino.reply_to(message, pass_text)
         await kaino.set_state(message.from_user.id, MyStates.password, message.chat.id)
 
@@ -74,11 +86,12 @@ async def password_token(message):
         update = True
         password = message.text
         token = data['token']
+        secret = data['secret']
         username =  message.from_user.username
 
         if data['response'] == "Registrar": update = False
         if message.from_user.username:
-            if await register(token, username, password, update):
+            if await register(token, secret, username, password, update):
                 await kaino.reply_to(message, f"✎ ¡Su token ha sido registrado con exito! ")
             else:
                 await kaino.reply_to(message, f"✎ ¡No puede registrarse, su usuario ya existe en la base de datos..! ")
