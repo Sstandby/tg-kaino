@@ -44,7 +44,7 @@ async def register(binance: str, secret: str, username: str, password: str, upda
             await db.disconnect()
 
 async def get_user_info(username: str):
-    """sea"""
+    """provide all user information"""
     try:
         await db.connect()
         user = await db.user.find_unique(
@@ -59,7 +59,7 @@ async def get_user_info(username: str):
 
 
 async def get_api_key(username: str):
-    """search for existing user token"""
+    """extract and decompile api key from db"""
     try:
         user = await get_user_info(username)
         password = user.password
@@ -71,7 +71,7 @@ async def get_api_key(username: str):
         pass
 
 async def get_api_secret(username: str):
-    """search for existing user token"""
+    """extract and decompile api secret from db"""
     try:
         user = await get_user_info(username)
         password = user.password
@@ -84,7 +84,7 @@ async def get_api_secret(username: str):
 
 
 async def existing_user(user: str) -> bool:
-    """search for existing user token"""
+    """detect if the telegram user is an existing user in the db"""
     try:
         await db.connect()
         user = await db.user.find_unique(
