@@ -1,42 +1,99 @@
 import jwt
+import json
+from bot import kaino_pass
 from bot.common.db import db
+from prisma.types import UserInclude
 
-async def register(binance: str, username: str, password: str, update: bool) -> bool:
+async def register(binance: str, secret: str, username: str, password: str, update: bool) -> bool:
     """Register binance token with its respective password"""
     try:
         binance = jwt.encode({"token": binance}, password, algorithm="HS256")
-        await db.connect()
-        if get_user_info(username):
-            if update:
-                await db.user.create(
-                    data={
-                        'binance_token': binance,
-                        'username': username,
-                        },
-                    )
-            else:
-                await db.user.update(
-                    where={
-                        'username': username,
-                        },
-                    data={
-                        'binance_token': binance,
-                        'username': username,
-                        }
-                    )
+        secret = jwt.encode({"secret": binance}, password, algorithm="HS256")
+        password = jwt.encode({"password": password}, kaino_pass, algorithm="HS256")
+        user = await existing_user(username)
+        if update == False:
+            if user: return False
+            await db.connect()
+            await db.user.create(
+                data={
+                    'binance_token': binance,
+                    'binance_secret': secret,
+                    'username': username,
+                    'password': password,
+                    'money': 'USDT'
+                    },
+                )
             return True
-        return False
+        else:
+            if user:
+                await db.user.update(
+                        where={
+                            'username': username,
+                            },
+                        data={
+                            'binance_token': binance,
+                            'username': username,
+                            'password': password,
+                            }
+                        )
+                return True
+            return False
 
     finally:
         if db.is_connected():
             await db.disconnect()
 
-async def get_user_info(user: str) -> bool:
+async def get_user_info(username: str):
+    """sea"""
+    try:
+        await db.connect()
+        user = await db.user.find_unique(
+            where={
+                'username': username,
+                },
+            )
+        return user
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
+
+async def get_api_key(username: str):
     """search for existing user token"""
-    user = await db.user.find_unique(
+    try:
+        user = await get_user_info(username)
+        password = user.password
+        binance_token = user.binance_token
+        secret = jwt.decode(password, kaino_pass, algorithms=["HS256"])
+        api_key = jwt.decode(binance_token, secret['password'], algorithms=["HS256"])
+        return api_key['token']
+    finally:
+        pass
+
+async def get_api_secret(username: str):
+    """search for existing user token"""
+    try:
+        user = await get_user_info(username)
+        password = user.password
+        binance_secret = user.binance_secret
+        secret = jwt.decode(password, kaino_pass, algorithms=["HS256"])
+        api_secret = jwt.decode(binance_secret, secret['password'], algorithms=["HS256"])
+        return api_secret['secret']
+    finally:
+        pass
+
+
+async def existing_user(user: str) -> bool:
+    """search for existing user token"""
+    try:
+        await db.connect()
+        user = await db.user.find_unique(
             where={
                 'username': user,
                 }
             )
-    if user: return True
-    return False
+        if user: return True
+        return False
+    finally:
+        if db.is_connected():
+            await db.disconnect()

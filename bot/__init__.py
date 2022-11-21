@@ -9,7 +9,9 @@ load_dotenv()
 
 class Secrets():
     def __init__(self) -> None:
-        self.token: str = os.getenv('token_tg')
+        self.token = os.getenv('token_tg')
+        self.kaino_pass = os.getenv('pass_db')
 
 secret = Secrets()
+kaino_pass = secret.kaino_pass
 kaino = AsyncTeleBot(secret.token, state_storage=StateMemoryStorage())
