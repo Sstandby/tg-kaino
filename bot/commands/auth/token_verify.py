@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*
+from logging import disable
 from bot import kaino
 from bot.common.db.users import register
 from telebot.types import ReplyKeyboardMarkup
@@ -70,7 +71,7 @@ async def response_token(message):
 async def change_token(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['token'] = message.text
-        await kaino.reply_to(message, secret_text)
+        await kaino.reply_to(message, secret_text, parse_mode="html", disable_web_page_preview=True)
         await kaino.set_state(message.from_user.id, MyStates.secret, message.chat.id)
 
 @kaino.message_handler(state=MyStates.secret,  chat_types=['private'])
