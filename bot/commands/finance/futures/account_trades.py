@@ -10,7 +10,7 @@ async def history_trades(message, data: dict):
     try:
         client = data['client']
         trades = await client.futures_coin_historical_trades(symbol='BTCUSD_PERP')
-        print(json.dumps(trades, indent=2))
         await kaino.reply_to(message, f"{json.dumps(trades, indent=2)}")
     except BinanceAPIException as e:
-        await kaino.reply_to(message, f"Error: {e}")
+        if e.status_code == 401:
+            await kaino.reply_to(message, f"✎ La API KEY no es valida, cambia la API que has puesto por otra con /token.")

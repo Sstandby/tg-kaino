@@ -5,10 +5,6 @@ isbinance_text = """
 ✎ No puedes usar este comando, por favor, usa /token para registrarte y usar los comandos de binance.
 """
 
-public_text = """
-✎ No puedes usar este comando, por favor, usalo en privado por seguridad, y comodidad.
-"""
-
 @kaino.message_handler(binance_user=False, commands=commands_IsBinance)
 async def not_is_binance(message):
     """
@@ -21,4 +17,4 @@ async def not_isbinance(message):
     """
     commands that do not require public use
     """
-    await kaino.reply_to(message, public_text)
+    await kaino.reply_to(message, isbinance_text)

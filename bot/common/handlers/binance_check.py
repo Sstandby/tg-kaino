@@ -9,7 +9,7 @@ class BinanceClient(BaseMiddleware):
         self.update_types = ['message']
 
     async def pre_process(self, message, data):
-        if message.text in commands_IsBinance:
+        if message.text[1:] in commands_IsBinance:
             api_key = await get_api_key(message.from_user.username)
             api_secret = await get_api_secret(message.from_user.username)
             data['client'] = await AsyncClient.create(api_key, api_secret)

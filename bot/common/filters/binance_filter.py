@@ -1,6 +1,7 @@
 import telebot
 from telebot.asyncio_filters import SimpleCustomFilter
 from bot.common.db.users import existing_user
+from binance.exceptions import BinanceAPIException
 
 class IsBinance(SimpleCustomFilter):
     key='binance_user'
