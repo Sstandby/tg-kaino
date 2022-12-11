@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*
-from logging import disable
 from bot import kaino
 from bot.common.db.users import register
 from telebot.types import ReplyKeyboardMarkup
@@ -10,7 +9,7 @@ token_text = """
 
       ⸙͎ Selecciona la opción que
     ⸙͎ mas se ajuste a tu situación.
-      ⸙͎ para su token de binance.
+⸙͎ para su token de binance.
 
 """
 
