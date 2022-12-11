@@ -5,7 +5,7 @@ from bot.common.db import db
 from prisma.types import UserInclude
 
 async def register(binance: str, secret: str, username: str, password: str, update: bool) -> bool:
-    """Register binance token with its respective password"""
+    """Register user with its respective password"""
     try:
         api_key = jwt.encode({"token": binance}, password, algorithm="HS256")
         api_secret = jwt.encode({"secret": secret}, password, algorithm="HS256")
@@ -18,7 +18,6 @@ async def register(binance: str, secret: str, username: str, password: str, upda
                 data={
                     'binance_token': api_key,
                     'binance_secret': api_secret,
-                    'username': username,
                     'password': password,
                     'money': 'USDT'
                     },
@@ -35,6 +34,43 @@ async def register(binance: str, secret: str, username: str, password: str, upda
                             'binance_token': binance,
                             'username': username,
                             'password': password,
+                            }
+                        )
+                return True
+            return False
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
+async def register_user(fullname: str, country: str, phone: str, email: str, username: str, update: bool) -> bool:
+    """Registering user for kaino"""
+    try:
+        user = await existing_user(username)
+        if update == False:
+            if user: return False
+            await db.connect()
+            await db.user.create(
+                data={
+                    'fullname': fullname,
+                    'country': country,
+                    'username': username,
+                    'phone': phone,
+                    'email': email,
+                    },
+                )
+            return True
+        else:
+            if user:
+                await db.connect()
+                await db.user.update(
+                        where={
+                            'username': username,
+                            },
+                        data={
+                            'fullname': fullname,
+                            'country': country,
+                            'phone': phone,
+                            'email': email,
                             }
                         )
                 return True
