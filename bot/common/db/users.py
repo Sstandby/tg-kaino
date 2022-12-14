@@ -106,7 +106,7 @@ async def get_api_key(username: str) -> str:
     except Exception as es:
         pass
 
-async def get_api_secret(username: str) -> str:
+async def get_api_secret(username: str):
     """extract and decompile api secret from db"""
     try:
         user = await get_user_info(username)
@@ -126,6 +126,24 @@ async def existing_user(user: str) -> bool:
         user = await db.user.find_unique(
             where={
                 'username': user,
+                }
+            )
+        if user: return True
+        return False
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
+
+async def identifiership_update(user: str, item: str) -> bool:
+    try:
+        await db.connect()
+        user = await db.user.update(
+            where={
+                'username': user,
+                },
+            data={
+                'identifiership': item,
                 }
             )
         if user: return True
