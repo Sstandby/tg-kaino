@@ -6,9 +6,10 @@ import logging
 import telebot
 from bot import kaino
 from bot.common import importdir
-from bot.common.handlers.binance_check import BinanceClient
-from bot.common.filters.binance_filter import IsBinance
 from telebot.async_telebot import asyncio_filters
+from bot.common.filters.user_filter import IsUserDB
+from bot.common.handlers.user_middleware import UserDBMiddlware
+from bot.common.handlers.binance_middleware import BinanceClientMiddleware
 
 # Enable logging
 #logging.getLogger('prisma').setLevel(logging.DEBUG)
@@ -20,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 importdir.do('bot/commands/auth', globals())
 importdir.do('bot/commands/finance/futures', globals())
+importdir.do('bot/commands/finance/coinpayments', globals())
 importdir.do('bot/common/exceptions', globals())
 
 
@@ -38,9 +40,9 @@ async def start(message):
 
 kaino.add_custom_filter(asyncio_filters.StateFilter(kaino))
 kaino.add_custom_filter(asyncio_filters.IsDigitFilter())
-kaino.add_custom_filter(IsBinance())
-kaino.setup_middleware(BinanceClient())
-
+kaino.add_custom_filter(IsUserDB())
+kaino.setup_middleware(BinanceClientMiddleware())
+kaino.setup_middleware(UserDBMiddlware())
 if __name__ == "__main__":
     import asyncio
     asyncio.run(kaino.polling())
