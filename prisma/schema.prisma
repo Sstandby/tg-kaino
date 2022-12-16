@@ -11,14 +11,16 @@ generator client {
 }
 
 model User {
-  id               Int     @id @default(autoincrement())
+  id               Int      @id @default(autoincrement())
   fullname         String?
   country          String?
-  phone            String?    @unique
+  phone            String?  @unique
   email            String?  @unique
-  binance_token    String  @unique
-  binance_secret   String  @unique
-  username         String  @unique
-  password         String
+  binance_token    String?   @unique
+  binance_secret   String?   @unique
+  membership       Boolean?
+  identifiership   String?  @unique
+  username         String?   @unique
+  password         String?
   money            String?
 }
