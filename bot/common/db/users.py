@@ -135,6 +135,23 @@ async def existing_user(user: str) -> bool:
             await db.disconnect()
 
 
+async def membership_update(user: str, membership: bool):
+    try:
+        await db.connect()
+        user = await db.user.update(
+            where={
+                'username': user,
+                },
+            data={
+                'membership': membership,
+                }
+            )
+        if user: return True
+        return False
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
 async def identifiership_update(user: str, item: str) -> bool:
     try:
         await db.connect()
