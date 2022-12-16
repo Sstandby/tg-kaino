@@ -10,7 +10,7 @@ private_text = """
 """
 
 @kaino.message_handler(existing_user=False, commands=commands_IsBinance)
-async def not_is_binance(message):
+async def not_is_user(message):
     """
     Message when the user does not exist in the db registered for binance
     """
