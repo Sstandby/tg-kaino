@@ -2,14 +2,14 @@ from bot import kaino
 from bot import commands_IsBinance, commands_private
 
 isbinance_text = """
-✎ No puedes usar este comando, por favor, usa /token para registrarte y usar los comandos de binance.
+✎ No puedes usar este comando, por favor, usa /register para registrar tu usuario en la base de datos y poder usar este comando.
 """
 
 private_text = """
 ✎ Este comando es privado, por favor no lo uses en un chat publico por seguridad.
 """
 
-@kaino.message_handler(binance_user=False, commands=commands_IsBinance)
+@kaino.message_handler(existing_user=False, commands=commands_IsBinance)
 async def not_is_binance(message):
     """
     Message when the user does not exist in the db registered for binance
