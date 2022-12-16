@@ -16,8 +16,7 @@ user_text = """
 
       ⸙͎ Selecciona la opción que
     ⸙͎ mas se ajuste a tu situación.
-⸙͎ para su registro en kaino.
-
+      ⸙͎ para su registro en kaino.
 """
 
 fullname_text = """
@@ -92,6 +91,7 @@ async def register_email(message):
 async def register_country(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         update = True
+        countryTrue = False
         country = message.text
         email = data['email']
         fullname = data['fullname']
@@ -100,15 +100,15 @@ async def register_country(message):
         username =  message.from_user.username
         for key in countryList:
             countryTrue = re.search(country, countryList[key])
-            if countryTrue:
-                if message.from_user.username:
-                    if await register_user(fullname, country, phone, email, username, update):
-                        await kaino.reply_to(message, f"✎ ¡Su usuario ha sido registrado con exito! ")
-                    else:
-                        await kaino.reply_to(message, f"✎ ¡No puede registrarse, su usuario ya existe en la base de datos..! ")
+            if countryTrue: break
+        if countryTrue:
+            if message.from_user.username:
+                if await register_user(fullname, country, phone, email, username, update):
+                    await kaino.reply_to(message, f"✎ ¡Su usuario ha sido registrado con exito! ")
                 else:
-                    await kaino.reply_to(message, existing_user_text)
+                    await kaino.reply_to(message, f"✎ ¡No puede registrarse, su usuario ya existe en la base de datos..! ")
             else:
-                await kaino.reply_to(message, f"✎ ¡No puede registrarse, el país que puso no existe, por favor, vuelva a ponerlo!")
-                await kaino.set_state(message.from_user.id, MyStates.country, message.chat.id)
-        await kaino.delete_state(message.from_user.id, message.chat.id)
+                await kaino.reply_to(message, existing_user_text)
+        else:
+            await kaino.reply_to(message, f"✎ ¡No puede registrarse, el país que puso no existe, por favor, vuelva a ponerlo!")
+            await kaino.set_state(message.from_user.id, MyStates.country, message.chat.id)
