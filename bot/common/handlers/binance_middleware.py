@@ -3,7 +3,7 @@ from binance import AsyncClient
 from bot.common.db.users import get_api_key, get_api_secret
 from telebot.handler_backends import BaseMiddleware
 
-class BinanceClient(BaseMiddleware):
+class BinanceClientMiddleware(BaseMiddleware):
 
     def __init__(self):
         self.update_types = ['message']
