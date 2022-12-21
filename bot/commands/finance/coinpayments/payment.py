@@ -24,7 +24,7 @@ notAccepting_text = """
 </b>
 """
 
-@kaino.message_handler(existing_user=True, commands=['membership'])
+@kaino.message_handler(existing_user=True, membership=False, commands=['membership'])
 async def membership(message, data):
     user = data["user"]
     currency = "USDT.TRC20"
@@ -35,9 +35,9 @@ async def membership(message, data):
     URL_CHECK=payment["result"]["checkout_url"]
     await kaino.reply_to(message, payment_text.format(URL_QR=URL_QR, URL_CHECK=URL_CHECK), parse_mode="html", disable_web_page_preview=True)
 
-@kaino.message_handler(existing_user=True, commands=['accepting'])
+@kaino.message_handler(existing_user=True, membership=False, commands=['accepting'])
 async def accepting(message, data):
-    user = data["user"]
+    user = data['membership']
     status = clientPayment.get_tx_info(txid=user.identifiership)["result"]["status"]
     if status >= 1:
          await membership_update(message.from_user.username, True)
