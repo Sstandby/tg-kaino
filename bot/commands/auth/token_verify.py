@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*
 from bot import kaino
-from bot.common.db.users import register
+from bot.common.db.users import register_wallet
 from telebot.types import ReplyKeyboardMarkup
 from telebot.asyncio_handler_backends import State, StatesGroup
 
@@ -48,7 +48,7 @@ class MyStates(StatesGroup):
 
 
 
-@kaino.message_handler(commands=['token'], chat_types=['private'])
+@kaino.message_handler(existing_user=True, commands=['token'], chat_types=['private'])
 async def token(message):
     markup = ReplyKeyboardMarkup(one_time_keyboard=True, input_field_placeholder="Selecciona alguna de las opciónes")
     markup.add("Registrar","Cambiar")
@@ -91,7 +91,7 @@ async def password_token(message):
 
         if data['response'] == "Registrar": update = False
         if message.from_user.username:
-            if await register(token, secret, username, password, update):
+            if await register_wallet(token, secret, username, password, update):
                 await kaino.reply_to(message, f"✎ ¡Su token ha sido registrado con exito! ")
             else:
                 await kaino.reply_to(message, f"✎ ¡No puede registrarse, su usuario ya existe en la base de datos..! ")
