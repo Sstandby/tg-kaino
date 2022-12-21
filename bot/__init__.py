@@ -15,6 +15,16 @@ class Secrets():
         self.private = os.getenv('PRIVATE')
         self.public = os.getenv('PUBLIC')
 
+commands_GetInfo = ["accepting"]
+commands_IsMembership = ["membership"]
+commands_IsBinance = ["hTrades", "hIncome", "balance", "positionInfo"]
+commands_private = ["start", "token", "register"]
+secret = Secrets()
+kaino_pass = secret.kaino_pass
+clientPayment = CoinPaymentsAPI(public_key=secret.public,
+                          private_key=secret.private)
+kaino = AsyncTeleBot(secret.token, state_storage=StateMemoryStorage())
+
 countryList = {
     "AF": "Afghanistan",
     "AL": "Albania",
@@ -266,12 +276,3 @@ countryList = {
     "ZW": "Zimbabwe",
     "AX": "Åland Islands"
 };
-
-commands_IsMembership = ["membership", "accepting"]
-commands_IsBinance = ["hTrades", "hIncome", "balance", "positionInfo"]
-commands_private = ["start", "token", "register"]
-secret = Secrets()
-kaino_pass = secret.kaino_pass
-clientPayment = CoinPaymentsAPI(public_key=secret.public,
-                          private_key=secret.private)
-kaino = AsyncTeleBot(secret.token, state_storage=StateMemoryStorage())

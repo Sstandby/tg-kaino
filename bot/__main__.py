@@ -3,11 +3,10 @@
 # This program is dedicated to the public domain under the CC0 license.
 
 import logging
-import telebot
 from bot import kaino
 from bot.common import importdir
 from telebot.async_telebot import asyncio_filters
-from bot.common.filters.user_filter import IsUserDB
+from bot.common.filters.user_filter import IsUserDB, IsMembership
 from bot.common.handlers.user_middleware import UserDBMiddlware
 from bot.common.handlers.binance_middleware import BinanceClientMiddleware
 
@@ -41,8 +40,10 @@ async def start(message):
 kaino.add_custom_filter(asyncio_filters.StateFilter(kaino))
 kaino.add_custom_filter(asyncio_filters.IsDigitFilter())
 kaino.add_custom_filter(IsUserDB())
+kaino.add_custom_filter(IsMembership())
 kaino.setup_middleware(BinanceClientMiddleware())
 kaino.setup_middleware(UserDBMiddlware())
+
 if __name__ == "__main__":
     import asyncio
     asyncio.run(kaino.polling())
