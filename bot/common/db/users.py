@@ -47,6 +47,45 @@ async def register_wallet(binance: str, secret: str, username: str, password: st
         if db.is_connected():
             await db.disconnect()
 
+async def register_deriv(api_access: str, username: str, password: str, update: bool) -> bool:
+    """Register deriv """
+    try:
+        api = jwt.encode({"token": api_access}, kaino_pass, algorithm="HS256")
+        password = jwt.encode({"password": password}, kaino_pass, algorithm="HS256")
+        user = await existing_user(username)
+        if update == False:
+            if user: return False
+            await db.connect()
+            await db.user.create(
+                data={
+                    'Wallet': {
+                        'create': {
+                            'api_access': api,
+                            'encrypted_pass': password,
+                            },
+                        },
+                    },
+                )
+            return True
+        else:
+            if user:
+                await db.connect()
+                await db.user.update(
+                        where={
+                            'username': username,
+                            },
+                        data={
+                            'api_access': api  ,
+                            'encrypted_pass': password,
+                            }
+                        )
+                return True
+            return False
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
+
 async def register_user(fullname: str, country: str, phone: str, email: str, username: str, update: bool) -> bool:
     """Registering user for kaino"""
     try:
