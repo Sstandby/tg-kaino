@@ -1,3 +1,4 @@
+import datetime
 import jwt
 import json
 from bot import kaino_pass
@@ -188,6 +189,7 @@ async def membership_update(username: str, membership: bool) -> bool:
                 },
             data={
                 'active': membership,
+                'created_at': datetime.datetime.now()
                 }
             )
         if user: return True
