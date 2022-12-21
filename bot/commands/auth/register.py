@@ -35,6 +35,10 @@ email_text = """
 ✎ Digite su correo electronico, recuerde que es importante poner todo correctamente en caso de rembolsos.
 """
 
+notIsValidEmail_text = """
+✎ Su email no es valido, por favor, vuelve a ingresar todo correctamente de nuevo. (/register)
+"""
+
 existing_user_text = """
 ⠀✎ Por favor, ponga un username en
 ⠀✎ su perfil de telegram, para tener
@@ -44,9 +48,11 @@ existing_user_text = """
 response_error_text = """
 ⠀✎ Elija correctamente algunas de
 ⠀✎ las opciones que se muestran
-⠀⠀⠀⠀✎ en los botones: /token.
+⠀⠀ ✎ en los botones de: /register.
 """
 
+async def is_valid_email(email):
+  return re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email) is not None
 
 @kaino.message_handler(commands=['register'], chat_types=['private'])
 async def register(message):
@@ -60,7 +66,7 @@ async def response_token(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['response'] = message.text
         response = data['response']
-        if response == "Registrar" or response == "Cambiar":
+        if response == "Registrar" or response == "Actualizar":
            await kaino.reply_to(message, fullname_text, parse_mode="html", disable_web_page_preview=True)
            await kaino.set_state(message.from_user.id, MyStates.fullname, message.chat.id)
         else:
@@ -84,8 +90,11 @@ async def register_phone(message):
 async def register_email(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['email'] = message.text
-        await kaino.reply_to(message, country_text, parse_mode="html", disable_web_page_preview=True)
-        await kaino.set_state(message.from_user.id, MyStates.country, message.chat.id)
+        if await is_valid_email(message.text):
+           await kaino.reply_to(message, country_text, parse_mode="html", disable_web_page_preview=True)
+           await kaino.set_state(message.from_user.id, MyStates.country, message.chat.id)
+        else:
+           await kaino.reply_to(message, notIsValidEmail_text, parse_mode="html", disable_web_page_preview=True)
 
 @kaino.message_handler(state=MyStates.country, chat_types=['private'])
 async def register_country(message):
@@ -105,6 +114,7 @@ async def register_country(message):
             if message.from_user.username:
                 if await register_user(fullname, country, phone, email, username, update):
                     await kaino.reply_to(message, f"✎ ¡Su usuario ha sido registrado con exito! ")
+                    await kaino.delete_state(message.from_user.id, message.chat.id)
                 else:
                     await kaino.reply_to(message, f"✎ ¡No puede registrarse, su usuario ya existe en la base de datos..! ")
             else:

@@ -1,10 +1,11 @@
+import datetime
 import jwt
 import json
 from bot import kaino_pass
 from bot.common.db import db
 from prisma.types import UserInclude
 
-async def register(binance: str, secret: str, username: str, password: str, update: bool) -> bool:
+async def register_wallet(binance: str, secret: str, username: str, password: str, update: bool) -> bool:
     """Register user with its respective password"""
     try:
         api_key = jwt.encode({"token": binance}, password, algorithm="HS256")
@@ -16,10 +17,14 @@ async def register(binance: str, secret: str, username: str, password: str, upda
             await db.connect()
             await db.user.create(
                 data={
-                    'binance_token': api_key,
-                    'binance_secret': api_secret,
-                    'password': password,
-                    'money': 'USDT'
+                    'Wallet': {
+                        'create': {
+                            'binance_token': api_key,
+                            'binance_secret': api_secret,
+                            'password': password,
+                            'money': 'USDT'
+                            },
+                        },
                     },
                 )
             return True
@@ -58,6 +63,17 @@ async def register_user(fullname: str, country: str, phone: str, email: str, use
                     'email': email,
                     },
                 )
+            await db.wallet.create(
+                data = {
+                    'username': username,
+                    },
+                )
+            await db.membership.create(
+                data = {
+                    'username': username,
+                    'active': False,
+                    },
+                )
             return True
         else:
             if user:
@@ -93,8 +109,21 @@ async def get_user_info(username: str):
         if db.is_connected():
             await db.disconnect()
 
+async def get_membership_info(username: str):
+    """provide all user information"""
+    try:
+        await db.connect()
+        user = await db.membership.find_unique(
+            where={
+                'username': username,
+                },
+            )
+        return user
+    finally:
+        if db.is_connected():
+            await db.disconnect()
 
-async def get_api_key(username: str) -> str:
+async def get_api_key(username: str):
     """extract and decompile api key from db"""
     try:
         user = await get_user_info(username)
@@ -135,15 +164,32 @@ async def existing_user(user: str) -> bool:
             await db.disconnect()
 
 
-async def membership_update(user: str, membership: bool):
+async def membership(user: str) -> bool:
+    """detect if membership is activated"""
     try:
         await db.connect()
-        user = await db.user.update(
+        membership = await db.membership.find_unique(
             where={
                 'username': user,
+                }
+            )
+        if membership.active: return True
+        return False
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
+
+async def membership_update(username: str, membership: bool) -> bool:
+    try:
+        await db.connect()
+        user = await db.membership.update(
+            where={
+                'username': username,
                 },
             data={
-                'membership': membership,
+                'active': membership,
+                'created_at': datetime.datetime.now()
                 }
             )
         if user: return True
@@ -155,7 +201,7 @@ async def membership_update(user: str, membership: bool):
 async def identifiership_update(user: str, item: str) -> bool:
     try:
         await db.connect()
-        user = await db.user.update(
+        user = await db.membership.update(
             where={
                 'username': user,
                 },

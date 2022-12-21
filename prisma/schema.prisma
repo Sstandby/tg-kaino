@@ -11,16 +11,34 @@ generator client {
 }
 
 model User {
-  id               Int      @id @default(autoincrement())
+  id               String   @id @default(uuid())
   fullname         String?
   country          String?
   phone            String?  @unique
   email            String?  @unique
-  binance_token    String?   @unique
-  binance_secret   String?   @unique
-  membership       Boolean?
-  identifiership   String?  @unique
-  username         String?   @unique
+  username         String   @unique
+  wallet           Wallet?
+  membership       Membership?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+}
+
+model Wallet {
+  id               String   @id @default(uuid())
+  username         String   @unique
+  user             User     @relation(fields: [username], references: [username])
+  binance_token    String?  @unique
+  binance_secret   String?  @unique
+  id_access        String?  @unique
+  encrypted_pass   String?
   password         String?
-  money            String?
+}
+
+model Membership  {
+  active           Boolean?
+  identifiership   String?  @unique
+  username         String   @unique
+  user             User     @relation(fields: [username], references: [username])
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
 }
