@@ -1,5 +1,5 @@
 from bot import kaino
-from bot import commands_IsBinance, commands_private
+from bot import commands_IsBinance, commands_private, commands_IsMembership
 
 notExistingUser_text = """
 ✎ No puedes usar este comando, por favor, usa /register para registrar tu usuario en la base de datos y poder usar este comando.
@@ -13,6 +13,11 @@ membershipCommandTrue_text = """
 ✎ Si ya pago su membresia no es necesario realizar esta parte, por favor, disfrute de los demas comandos: /help
 """
 
+membershipCommandFalse_text = """
+✎ Para usar este comando debe pagar la membresia mediante el comando; /payment
+"""
+
+
 @kaino.message_handler(existing_user=False, commands=commands_IsBinance)
 async def not_is_user(message):
     """
@@ -20,8 +25,16 @@ async def not_is_user(message):
     """
     await kaino.reply_to(message, notExistingUser_text)
 
-@kaino.message_handler(membership=True, commands=['membership', 'accepting'])
+@kaino.message_handler(membership=False, commands=commands_IsMembership)
 async def membership_desactivated(message):
+    """
+    Message except if membership is desactivated
+    """
+    await kaino.reply_to(message, membershipCommandFalse_text)
+
+
+@kaino.message_handler(membership=True, commands=['membership', 'accepting'])
+async def membership_active(message):
     """
     Message except if membership is desactivated
     """
