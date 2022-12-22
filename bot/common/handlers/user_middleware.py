@@ -1,4 +1,4 @@
-from bot import commands_IsMembership, commands_GetInfo
+from bot import commands_GetInfoMembership
 from bot.common.db.users import get_user_info, get_membership_info
 from telebot.handler_backends import BaseMiddleware
 
@@ -8,10 +8,10 @@ class UserDBMiddlware(BaseMiddleware):
         self.update_types = ['message']
 
     async def pre_process(self, message, data):
-        if message.text[1:] in commands_IsMembership:
+        if message.text[1:] == "membership":
             user = await get_user_info(message.from_user.username)
             data['user'] = user
-        if message.text[1:] in commands_GetInfo:
+        if message.text[1:] in commands_GetInfoMembership:
             membership = await get_membership_info(message.from_user.username)
             data['membership'] = membership
     async def post_process(self, message, data, exception=None):
