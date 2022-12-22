@@ -15,8 +15,8 @@ class Secrets():
         self.private = os.getenv('PRIVATE')
         self.public = os.getenv('PUBLIC')
 
-commands_GetInfo = ["accepting"]
-commands_IsMembership = ["membership"]
+commands_GetInfoMembership = ["accepting"]
+commands_IsMembership = ["deriv", "token"]
 commands_IsBinance = ["hTrades", "hIncome", "balance", "positionInfo"]
 commands_private = ["start", "token", "register"]
 secret = Secrets()
