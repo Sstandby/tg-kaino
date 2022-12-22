@@ -5,11 +5,11 @@ from telebot.types import ReplyKeyboardMarkup
 from telebot.asyncio_handler_backends import State, StatesGroup
 
 token_text = """
-⠀⠀⠀⠀⠀ ⠀⠀<b>༼TOKEN༽</b>.
+⠀⠀⠀⠀⠀ ⠀⠀<b>༼MT5༽</b>.
 
-      ⸙͎ Selecciona la opción que
-    ⸙͎ mas se ajuste a tu situación.
-   ⸙͎ para registar su cuenta para MT5.
+       ⸙͎ Selecciona la opción que
+     ⸙͎ mas se ajuste a tu situación.
+ ⸙͎ para registar su cuenta para MT5.
 """
 
 api_text = """
@@ -23,7 +23,7 @@ pass_text = """
 response_error_text = """
 ⠀✎ Elija correctamente algunas de
 ⠀✎ las opciones que se muestran
-⠀⠀⠀⠀✎ en los botones: /token.
+⠀⠀⠀⠀✎ en los botones: /deriv.
 """
 
 existing_user_text = """
@@ -39,15 +39,15 @@ class MyStates(StatesGroup):
 
 
 
-@kaino.message_handler(existing_user=True, commands=['token'], chat_types=['private'])
-async def token(message):
+@kaino.message_handler(existing_user=True, membership=True, commands=['deriv'], chat_types=['private'])
+async def deriv(message):
     markup = ReplyKeyboardMarkup(one_time_keyboard=True, input_field_placeholder="Selecciona alguna de las opciónes")
     markup.add("Registrar","Cambiar")
     await kaino.set_state(message.from_user.id, MyStates.response, message.chat.id)
     await kaino.reply_to(message, token_text, parse_mode="html", reply_markup=markup)
 
 @kaino.message_handler(state=MyStates.response,  chat_types=['private'])
-async def response_token(message):
+async def response_option(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['response'] = message.text
         response = data['response']
@@ -75,9 +75,9 @@ async def password_mt5(message):
         if data['response'] == "Registrar": update = False
         if message.from_user.username:
             if await register_deriv(token, username, password, update):
-                await kaino.reply_to(message, f"✎ ¡Su token ha sido registrado con exito! ")
+                await kaino.reply_to(message, f"✎ ¡Su cuenta ha sido registrado con exito! ")
             else:
-                await kaino.reply_to(message, f"✎ ¡No puede registrarse, su usuario ya existe en la base de datos..! ")
+                await kaino.reply_to(message, f"✎ ¡Actualice no registre, su usuario ya existe en la base de datos..! ")
         else:
             await kaino.reply_to(message, existing_user_text)
     await kaino.delete_state(message.from_user.id, message.chat.id)
