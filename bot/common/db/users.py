@@ -200,6 +200,25 @@ async def get_api_secret(username: str):
     except Exception as es:
         pass
 
+async def get_deriv_pass(username: str):
+    """extract and decompile pass from db"""
+    try:
+        user = await get_wallet_info(username)
+        password = user.encrypted_pass
+        api_secret = jwt.decode(password, kaino_pass, algorithms=["HS256"])
+        return api_secret['password']
+    except Exception as es:
+        pass
+
+async def get_deriv_user(username: str):
+    """extract and decompile id acces from db"""
+    try:
+        user = await get_wallet_info(username)
+        access = user.id_access
+        api_secret = jwt.decode(access, kaino_pass, algorithms=["HS256"])
+        return api_secret['token']
+    except Exception as es:
+        pass
 
 async def existing_user(user: str) -> bool:
     """detect if the telegram user is an existing user in the db"""
