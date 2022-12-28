@@ -32,8 +32,8 @@ existing_user_text = """
 ⠀⠀⠀✎ un identificador unico.
 """
 
-class MyStates(StatesGroup):
-    response = State()
+class MyStateDeriv(StatesGroup):
+    response_deriv = State()
     token = State()
     password = State()
 
@@ -43,28 +43,28 @@ class MyStates(StatesGroup):
 async def deriv(message):
     markup = ReplyKeyboardMarkup(one_time_keyboard=True, input_field_placeholder="Selecciona alguna de las opciónes")
     markup.add("Registrar","Cambiar")
-    await kaino.set_state(message.from_user.id, MyStates.response, message.chat.id)
+    await kaino.set_state(message.from_user.id, MyStateDeriv.response_deriv, message.chat.id)
     await kaino.reply_to(message, token_text, parse_mode="html", reply_markup=markup)
 
-@kaino.message_handler(state=MyStates.response,  chat_types=['private'])
-async def response_option(message):
+@kaino.message_handler(state=MyStateDeriv.response_deriv,  chat_types=['private'])
+async def deriv_option(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['response'] = message.text
         response = data['response']
         if response == "Registrar" or response == "Cambiar":
            await kaino.reply_to(message, api_text, parse_mode="html", disable_web_page_preview=True)
-           await kaino.set_state(message.from_user.id, MyStates.token, message.chat.id)
+           await kaino.set_state(message.from_user.id, MyStateDeriv.token, message.chat.id)
         else:
            await kaino.reply_to(message, response_error_text, parse_mode="html")
 
-@kaino.message_handler(state=MyStates.token,  chat_types=['private'])
+@kaino.message_handler(state=MyStateDeriv.token,  chat_types=['private'])
 async def api_mt5(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['token'] = message.text
         await kaino.reply_to(message, pass_text, parse_mode="html", disable_web_page_preview=True)
-        await kaino.set_state(message.from_user.id, MyStates.password, message.chat.id)
+        await kaino.set_state(message.from_user.id, MyStateDeriv.password, message.chat.id)
 
-@kaino.message_handler(state=MyStates.password,  chat_types=['private'])
+@kaino.message_handler(state=MyStateDeriv.password,  chat_types=['private'])
 async def password_mt5(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         update = True
