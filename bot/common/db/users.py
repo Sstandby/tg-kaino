@@ -24,7 +24,6 @@ async def register_wallet(binance: str, secret: str, username: str, password: st
                     'binance_token': api_key,
                     'binance_secret': api_secret,
                     'password': password,
-                    'money': 'USDT'
                     },
                 )
             return True
