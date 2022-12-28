@@ -1,4 +1,5 @@
 import re
+import unicodedata
 from bot import kaino, countryList
 from bot.common.db.users import register_user
 from telebot.types import ReplyKeyboardMarkup
@@ -54,6 +55,9 @@ response_error_text = """
 async def is_valid_email(email):
   return re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email) is not None
 
+async def remove_tildes(x):
+    return unicodedata.normalize("NFD", x).encode("ascii", "ignore").decode("utf-8")
+
 @kaino.message_handler(commands=['register'], chat_types=['private'])
 async def register(message):
     markup = ReplyKeyboardMarkup(one_time_keyboard=True, input_field_placeholder="Selecciona alguna de las opciónes")
@@ -108,12 +112,12 @@ async def register_country(message):
         if data['response'] == "Registrar": update = False
         username =  message.from_user.username
         for key in countryList:
-            countryTrue = re.search(country, countryList[key])
+            countryTrue = re.search(await remove_tildes(country), await remove_tildes(countryList[key]), re.IGNORECASE)
             if countryTrue: break
         if countryTrue:
             if message.from_user.username:
                 if await register_user(fullname, country, phone, email, username, update):
-                    await kaino.reply_to(message, f"✎ ¡Su usuario ha sido registrado con exito! ")
+                    await kaino.reply_to(message, f"✎ ¡Su usuario ha sido registrado con exito! Para seguir con su registro al 100% reacuerde usar /membership, para pagar su membresia, y /deriv para registrar su cuenta de MT5.")
                     await kaino.delete_state(message.from_user.id, message.chat.id)
                 else:
                     await kaino.reply_to(message, f"✎ ¡No puede registrarse, su usuario ya existe en la base de datos..! ")
