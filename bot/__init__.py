@@ -18,7 +18,7 @@ class Secrets():
 commands_GetInfoMembership = ["accepting"]
 commands_IsMembership = ["deriv", "token"]
 commands_IsBinance = ["hTrades", "hIncome", "balance", "positionInfo"]
-commands_private = ["start", "token", "register"]
+commands_private = ["start", "binance", "register"]
 secret = Secrets()
 kaino_pass = secret.kaino_pass
 clientPayment = CoinPaymentsAPI(public_key=secret.public,
@@ -88,7 +88,7 @@ countryList = {
     "DK": "Denmark",
     "DJ": "Djibouti",
     "DM": "Dominica",
-    "DO": "Dominican Republic (the)",
+    "DO": "República Dominicana",
     "EC": "Ecuador",
     "EG": "Egypt",
     "SV": "El Salvador",
