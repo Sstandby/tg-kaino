@@ -40,47 +40,45 @@ existing_user_text = """
 
 """
 
-class MyStates(StatesGroup):
+class MyStateBinance(StatesGroup):
     response = State()
     token = State()
     secret = State()
     password = State()
 
-
-
-@kaino.message_handler(existing_user=True, commands=['token'], chat_types=['private'])
+@kaino.message_handler(existing_user=True, commands=['binance'], chat_types=['private'])
 async def token(message):
     markup = ReplyKeyboardMarkup(one_time_keyboard=True, input_field_placeholder="Selecciona alguna de las opciónes")
     markup.add("Registrar","Cambiar")
-    await kaino.set_state(message.from_user.id, MyStates.response, message.chat.id)
+    await kaino.set_state(message.from_user.id, MyStateBinance.response, message.chat.id)
     await kaino.reply_to(message, token_text, parse_mode="html", reply_markup=markup)
 
-@kaino.message_handler(state=MyStates.response,  chat_types=['private'])
+@kaino.message_handler(state=MyStateBinance.response,  chat_types=['private'])
 async def response_token(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['response'] = message.text
         response = data['response']
         if response == "Registrar" or response == "Cambiar":
            await kaino.reply_to(message, change_text, parse_mode="html", disable_web_page_preview=True)
-           await kaino.set_state(message.from_user.id, MyStates.token, message.chat.id)
+           await kaino.set_state(message.from_user.id, MyStateBinance.token, message.chat.id)
         else:
            await kaino.reply_to(message, response_error_text, parse_mode="html")
 
-@kaino.message_handler(state=MyStates.token,  chat_types=['private'])
+@kaino.message_handler(state=MyStateBinance.token,  chat_types=['private'])
 async def change_token(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['token'] = message.text
         await kaino.reply_to(message, secret_text, parse_mode="html", disable_web_page_preview=True)
-        await kaino.set_state(message.from_user.id, MyStates.secret, message.chat.id)
+        await kaino.set_state(message.from_user.id, MyStateBinance.secret, message.chat.id)
 
-@kaino.message_handler(state=MyStates.secret,  chat_types=['private'])
+@kaino.message_handler(state=MyStateBinance.secret,  chat_types=['private'])
 async def change_secret(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['secret'] = message.text
         await kaino.reply_to(message, pass_text)
-        await kaino.set_state(message.from_user.id, MyStates.password, message.chat.id)
+        await kaino.set_state(message.from_user.id, MyStateBinance.password, message.chat.id)
 
-@kaino.message_handler(state=MyStates.password,  chat_types=['private'])
+@kaino.message_handler(state=MyStateBinance.password,  chat_types=['private'])
 async def password_token(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         update = True
