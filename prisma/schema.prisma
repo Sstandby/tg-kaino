@@ -29,6 +29,7 @@ model Wallet {
   user             User     @relation(fields: [username], references: [username])
   binance_token    String?  @unique
   binance_secret   String?  @unique
+  deriv_api        String?  @unique
   id_access        String?  @unique
   encrypted_pass   String?
   password         String?
