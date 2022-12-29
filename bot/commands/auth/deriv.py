@@ -13,7 +13,7 @@ token_text = """
 """
 
 api_text = """
-✎ Digite su API_ACCESO, respondiendo este mensaje.
+✎ Digite su ID de ACCESO, respondiendo este mensaje.
 """
 
 pass_text = """
@@ -32,11 +32,16 @@ existing_user_text = """
 ⠀⠀⠀✎ un identificador unico.
 """
 
+apideriv_text = """
+✎ Por favor, digite su api de Deriv.
+✎ <a href="https://api.deriv.com/app-registration">DERIV API.</a>
+"""
+
 class MyStateDeriv(StatesGroup):
     response_deriv = State()
     token = State()
     password = State()
-
+    api = State()
 
 
 @kaino.message_handler(existing_user=True, membership=True, commands=['deriv'], chat_types=['private'])
@@ -61,6 +66,16 @@ async def deriv_option(message):
 async def api_mt5(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['token'] = message.text
+        if data['token'].isdigit():
+            await kaino.reply_to(message, apideriv_text, parse_mode="html", disable_web_page_preview=True)
+            await kaino.set_state(message.from_user.id, MyStateDeriv.api, message.chat.id)
+        else:
+            await kaino.reply_to(message, "✎ Por favor, revise que no hayan caracteres en su ID de cuenta.", parse_mode="html", disable_web_page_preview=True)
+
+@kaino.message_handler(state=MyStateDeriv.api,  chat_types=['private'])
+async def api_deriv(message):
+    async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
+        data['api'] = message.text
         await kaino.reply_to(message, pass_text, parse_mode="html", disable_web_page_preview=True)
         await kaino.set_state(message.from_user.id, MyStateDeriv.password, message.chat.id)
 
@@ -70,11 +85,12 @@ async def password_mt5(message):
         update = True
         password = message.text
         token = data['token']
+        api = data['api']
         username =  message.from_user.username
 
         if data['response'] == "Registrar": update = False
         if message.from_user.username:
-            if await register_deriv(token, username, password, update):
+            if await register_deriv(token, username, password, api, update):
                 await kaino.reply_to(message, f"✎ ¡Su cuenta ha sido registrado con exito! ")
             else:
                 await kaino.reply_to(message, f"✎ ¡Actualice no registre, su usuario ya existe en la base de datos..! ")
