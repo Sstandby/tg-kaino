@@ -16,9 +16,10 @@ class Secrets():
         self.public = os.getenv('PUBLIC')
 
 commands_GetInfoMembership = ["accepting"]
-commands_IsMembership = ["deriv", "token"]
+commands_IsMembership = ["deriv", "token", "binance"]
 commands_IsBinance = ["hTrades", "hIncome", "balance", "positionInfo"]
-commands_private = ["start", "binance", "register"]
+commands_private = ["binance", "deriv", "register"]
+commands_all = commands_GetInfoMembership + commands_IsMembership + commands_IsBinance + ["start"]
 secret = Secrets()
 kaino_pass = secret.kaino_pass
 clientPayment = CoinPaymentsAPI(public_key=secret.public,
