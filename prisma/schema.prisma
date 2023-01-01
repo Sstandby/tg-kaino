@@ -36,7 +36,7 @@ model Wallet {
 }
 
 model Membership  {
-  active           Boolean?
+  active           Boolean? @default(false)
   identifiership   String?  @unique
   username         String   @unique
   user             User     @relation(fields: [username], references: [username])

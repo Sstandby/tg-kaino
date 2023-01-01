@@ -75,6 +75,7 @@ async def response_token(message):
            await kaino.set_state(message.from_user.id, MyStates.fullname, message.chat.id)
         else:
            await kaino.reply_to(message, response_error_text, parse_mode="html")
+           await kaino.delete_state(message.from_user.id, message.chat.id)
 
 @kaino.message_handler(state=MyStates.fullname, chat_types=['private'])
 async def register_fullname(message):

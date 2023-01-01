@@ -112,7 +112,6 @@ async def register_user(fullname: str, country: str, phone: str, email: str, use
             await db.membership.create(
                 data = {
                     'username': username,
-                    'active': False,
                     },
                 )
             return True

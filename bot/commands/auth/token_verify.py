@@ -46,7 +46,7 @@ class MyStateBinance(StatesGroup):
     secret = State()
     password = State()
 
-@kaino.message_handler(existing_user=True, commands=['binance'], chat_types=['private'])
+@kaino.message_handler(existing_user=True, membership=True, commands=['binance'], chat_types=['private'])
 async def token(message):
     markup = ReplyKeyboardMarkup(one_time_keyboard=True, input_field_placeholder="Selecciona alguna de las opciónes")
     markup.add("Registrar","Cambiar")
