@@ -14,7 +14,7 @@ membershipCommandTrue_text = """
 """
 
 membershipCommandFalse_text = """
-✎ Para usar este comando debe pagar la membresia mediante el comando; /payment
+✎ Para usar este comando debe pagar la membresia mediante el comando; /membership
 """
 
 
@@ -41,7 +41,7 @@ async def membership_active(message):
     await kaino.reply_to(message, membershipCommandTrue_text)
 
 @kaino.message_handler(commands=commands_private, chat_types=['group', 'supergroup'])
-async def not_isbinance(message):
+async def private_chat(message):
     """
     commands that do not require public use
     """
