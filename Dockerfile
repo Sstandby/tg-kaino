@@ -8,4 +8,3 @@ RUN apt-get update && apt-get install -y git
 RUN pip install -r requeriments.txt
 RUN prisma generate
 
-CMD ["python", "-m", "bot"]
