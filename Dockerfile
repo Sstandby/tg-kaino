@@ -1,10 +1,10 @@
-FROM python:3.10.9-slim-buster
+FROM public.ecr.aws/lambda/python:3.9
 
 RUN mkdir /app
 COPY . /app
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y git
 RUN pip install -r requeriments.txt
 RUN prisma generate
 
+CMD ["python", "-m", "bot"]
