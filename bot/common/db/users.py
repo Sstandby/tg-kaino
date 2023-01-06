@@ -46,10 +46,10 @@ async def register_wallet(binance: str, secret: str, username: str, password: st
         if db.is_connected():
             await db.disconnect()
 
-async def register_deriv(api_access: str, username: str, apiDeriv: str, password: str, update: bool) -> bool:
+async def register_deriv(api_access: str, username: str, password: str, update: bool) -> bool:
     """Register deriv """
     try:
-        apiDeriv = jwt.encode({"api": apiDeriv}, kaino_pass, algorithm="HS256")
+        # apiDeriv = jwt.encode({"api": apiDeriv}, kaino_pass, algorithm="HS256")
         api = jwt.encode({"token": api_access}, kaino_pass, algorithm="HS256")
         password = jwt.encode({"password": password}, kaino_pass, algorithm="HS256")
         user = await existing_user(username)
@@ -64,7 +64,7 @@ async def register_deriv(api_access: str, username: str, apiDeriv: str, password
                     data={
                         'id_access': api  ,
                         'encrypted_pass': password,
-                        'deriv_api': apiDeriv,
+                        # 'deriv_api': apiDeriv,
                         }
                 )
             return True
