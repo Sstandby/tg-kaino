@@ -34,7 +34,7 @@ paymenton_text = """
 async def membership(message, data):
     user = data["user"]
     currency = "USDT.TRC20"
-    payment = clientPayment.create_transaction(amount=10, currency1=currency, currency2=currency, buyer_email=user.email, buyer_name=user.fullname)
+    payment = clientPayment.create_transaction(amount=100, currency1=currency, currency2=currency, buyer_email=user.email, buyer_name=user.fullname)
     txn = payment["result"]["txn_id"]
     await identifiership_update(message.from_user.username, txn)
     URL_QR=payment["result"]["qrcode_url"]
