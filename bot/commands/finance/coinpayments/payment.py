@@ -25,7 +25,7 @@ notAccepting_text = """
 </b>
 """
 
-paymenton_text = """
+paymentTrue_text = """
 > El usuario {} ya pago su membresia, (Recuerda estar atento para su cuenta de Deriv).
 > Esta registro se realizo en la fecha: {}
 """
@@ -48,7 +48,7 @@ async def accepting(message, data):
     status = clientPayment.get_tx_info(txid=user.identifiership)["result"]["status"]
     if status >= 1:
          await membership_update(username, True)
-         await kaino.send_message(617961155, payment_text.format(username, date.today()))
+         await kaino.send_message(617961155, paymentTrue_text.format(username, date.today()))
          await kaino.reply_to(message, accepting_text, parse_mode="html", disable_web_page_preview=True)
     else:
          await kaino.reply_to(message, notAccepting_text, parse_mode="html", disable_web_page_preview=True)
