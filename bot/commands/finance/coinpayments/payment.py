@@ -8,7 +8,7 @@ payment_text = """
 ✎ <a href="{URL_QR}">QRCODE.</a>
 ✎ <a href="{URL_CHECK}">Checkout.</a>
 
-✎ <b>Una vez realizado el pago debe darle a /accepting recuerde este paso es muy IMPORTANTE para poder procesar su pago.</b>
+✎ <b>Una vez realizado el pago debe darle a /accepting recuerde este paso es muy IMPORTANTE para poder procesar su pago (Puede demorar unos 2m en que coinpayment lo de por OK, una vez que lo haga utilice el comando).</b>
 """
 
 accepting_text = """
