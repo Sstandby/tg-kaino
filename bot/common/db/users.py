@@ -88,7 +88,7 @@ async def register_deriv(api_access: str, username: str, password: str, update: 
             await db.disconnect()
 
 
-async def register_user(fullname: str, country: str, phone: str, email: str, username: str, update: bool) -> bool:
+async def register_user(fullname: str, country: str, phone: str, email: str, username: str, invite: str, trader: str, update: bool) -> bool:
     """Registering user for kaino"""
     try:
         user = await existing_user(username)
@@ -102,6 +102,8 @@ async def register_user(fullname: str, country: str, phone: str, email: str, use
                     'username': username,
                     'phone': phone,
                     'email': email,
+                    'inviteTrader': invite,
+                    'trader': trader,
                     },
                 )
             await db.wallet.create(
