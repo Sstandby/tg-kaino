@@ -10,7 +10,7 @@ private_text = """
 """
 
 membershipCommandTrue_text = """
-✎ Si ya pago su membresia no es necesario realizar esta parte, por favor, disfrute de los demas comandos: /help
+✎ Si ya pago su membresia no es necesario realizar esta parte, por favor, disfrute de los demas comandos: /start
 """
 
 membershipCommandFalse_text = """
