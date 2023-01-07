@@ -13,15 +13,28 @@ start_text = """
 """
 
 start_membership_text = """
-Para un proceso limpio para su registro y el pago de la membresia, debe realizar los siguientes pasos 👇👇
+✩ Para un proceso limpio para su registro y el pago de la membresia, debe realizar los siguientes pasos 👇👇
 
 📥 Registrar su cuenta en nuestra base de datos con /register
-✍️ Una vez completado, registrar su cuenta de deriv y MT5 con /deriv
+✍️  Una vez completado, registrar su cuenta de deriv y MT5 con /deriv
 🪙 Como caso opcional, su cuenta de binance registrando sus APIS (Recuerde solamente poner uso de lectura) utilizando el comando /binance
+
+✩ En caso de tener algun problema nos puede contactar desde los siguientes metodos;
+
+📌 +1 8292856400
+📌 support@kaino.io
 """
 
 start_help_text = """
-🚧  ¡¡En mantenimiento!! 🚧
+✩  ¡Gracias por elegir el camino del conocimiento! 🦁
+
+Los comandos de los que actualmente tenemos son los siguientes.
+
+📌 /start: Selección de pago y/o información sobre comandos.
+📌 /deriv: Resgitrar tu cuenta de DERIV de MT5
+📌 /binance: Registro de token de LECTURA a operar.
+📌 /membership: Inicio de pago de la membresia, una vez que pague espere 3m para utilizar /accepting.
+📌 /register: Registrar tu cuenta e información necesaria para operar.
 """
 
 class MyStateInfo(StatesGroup):
