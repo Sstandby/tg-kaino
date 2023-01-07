@@ -28,6 +28,8 @@ notAccepting_text = """
 paymentTrue_text = """
 > El usuario {} ya pago su membresia, (Recuerda estar atento para su cuenta de Deriv).
 > Esta registro se realizo en la fecha: {}
+> Trader: {}
+> Invitado por: {}
 """
 
 @kaino.message_handler(existing_user=True, membership=False, commands=['membership'])
@@ -44,11 +46,12 @@ async def membership(message, data):
 @kaino.message_handler(existing_user=True, membership=False, commands=['accepting'])
 async def accepting(message, data):
     user = data['membership']
+    userInfo = data['user']
     username = message.from_user.username
     status = clientPayment.get_tx_info(txid=user.identifiership)["result"]["status"]
     if status >= 1:
          await membership_update(username, True)
-         await kaino.send_message(617961155, paymentTrue_text.format(username, date.today()))
+         await kaino.send_message(617961155, paymentTrue_text.format(username, date.today()), userInfo.trader, userInfo.invite)
          await kaino.reply_to(message, accepting_text, parse_mode="html", disable_web_page_preview=True)
     else:
          await kaino.reply_to(message, notAccepting_text, parse_mode="html", disable_web_page_preview=True)

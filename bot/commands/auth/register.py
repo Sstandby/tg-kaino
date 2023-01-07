@@ -27,11 +27,11 @@ fullname_text = """
 """
 
 traderName_text = """
-✎ Digite su nombre de Trader, por favor.
+✎ Digite el trader que gestionara su cuenta.
 """
 
 inviteTraderName_text = """
-✎ Digite el nombre del Trader que lo invito. (Esto puede beneficiar en un futuro aquien lo invito.)
+✎ Digite el nombre completo de quién lo invito. (Esto puede beneficiar en un futuro aquien lo invito.)
 """
 
 phone_text = """
