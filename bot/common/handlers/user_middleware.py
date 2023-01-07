@@ -10,7 +10,7 @@ class UserDBMiddlware(BaseMiddleware):
         self.update_types = ['message']
 
     async def pre_process(self, message, data):
-        if message.text[1:] == "membership":
+        if message.text[1:] == ["membership", "accepting"]:
             user = await get_user_info(message.from_user.username)
             data['user'] = user
         if message.text[1:] in commands_GetInfoMembership:
