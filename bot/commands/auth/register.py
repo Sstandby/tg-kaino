@@ -9,6 +9,8 @@ class MyStates(StatesGroup):
     fullname = State()
     phone = State()
     country = State()
+    inviteTrader = State()
+    trader = State()
     email = State()
     response = State()
 
@@ -21,7 +23,15 @@ user_text = """
 """
 
 fullname_text = """
-✎ Digite su nombre para registrarte (nombres y apellidos, recuerde que toda la información que se le pida sera privada, y nadie la vera).
+✎ Digite su nombre para registrarse (nombres y apellidos, recuerde que toda la información que se le pida sera privada, y nadie la vera), por favor.
+"""
+
+traderName_text = """
+✎ Digite su nombre de Trader, por favor.
+"""
+
+inviteTraderName_text = """
+✎ Digite el nombre del Trader que lo invito. (Esto puede beneficiar en un futuro aquien lo invito.)
 """
 
 phone_text = """
@@ -81,6 +91,20 @@ async def response_token(message):
 async def register_fullname(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['fullname'] = message.text
+        await kaino.reply_to(message, traderName_text, parse_mode="html", disable_web_page_preview=True)
+        await kaino.set_state(message.from_user.id, MyStates.trader, message.chat.id)
+
+@kaino.message_handler(state=MyStates.trader, chat_types=['private'])
+async def register_traderName(message):
+    async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
+        data['trader'] = message.text
+        await kaino.reply_to(message, inviteTraderName_text, parse_mode="html", disable_web_page_preview=True)
+        await kaino.set_state(message.from_user.id, MyStates.inviteTrader, message.chat.id)
+
+@kaino.message_handler(state=MyStates.inviteTrader, chat_types=['private'])
+async def register_inviteTrader(message):
+    async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
+        data['inviteTrader'] = message.text
         await kaino.reply_to(message, phone_text, parse_mode="html", disable_web_page_preview=True)
         await kaino.set_state(message.from_user.id, MyStates.phone, message.chat.id)
 
@@ -110,6 +134,8 @@ async def register_country(message):
         email = data['email']
         fullname = data['fullname']
         phone = data['phone']
+        invite = data['inviteTrader']
+        trader = data['trader']
         if data['response'] == "Registrar": update = False
         username =  message.from_user.username
         for key in countryList:
@@ -117,7 +143,7 @@ async def register_country(message):
             if countryTrue: break
         if countryTrue:
             if message.from_user.username:
-                if await register_user(fullname, country, phone, email, username, update):
+                if await register_user(fullname, country, phone, email, username, invite, trader, update):
                     await kaino.reply_to(message, f"✎ ¡Su usuario ha sido registrado con exito! Para seguir con su registro al 100% reacuerde usar /membership, para pagar su membresia, y /deriv para registrar su cuenta de MT5.")
                     await kaino.delete_state(message.from_user.id, message.chat.id)
                 else:
