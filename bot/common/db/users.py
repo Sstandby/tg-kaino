@@ -102,7 +102,7 @@ async def register_user(fullname: str, country: str, phone: str, email: str, use
                     'username': username,
                     'phone': phone,
                     'email': email,
-                    'inviteTrader': invite,
+                    'invite': invite,
                     'trader': trader,
                     },
                 )
