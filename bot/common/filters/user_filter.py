@@ -1,12 +1,19 @@
 import telebot
 from telebot.asyncio_filters import SimpleCustomFilter
-from bot.common.db.users import existing_user, membership
+from bot.common.db.users import existing_user, check_txn_link, membership
 
 class IsUserDB(SimpleCustomFilter):
     key='existing_user'
     @staticmethod
     async def check(message: telebot.types.Message):
         if await existing_user(message.from_user.username): return True
+        return False
+
+class CheckTxnLink(SimpleCustomFilter):
+    key='check_txn'
+    @staticmethod
+    async def check(message: telebot.types.Message):
+        if await check_txn_link(message.from_user.username): return True
         return False
 
 class IsMembership(SimpleCustomFilter):
