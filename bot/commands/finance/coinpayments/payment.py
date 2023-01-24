@@ -1,6 +1,6 @@
 from datetime import date
 from bot import kaino, clientPayment
-from bot.common.db.users import identifiership_update, membership_update
+from bot.common.db.users import identifiership_update, membership_update, txn_link, cancel_link
 
 payment_text = """
 ✎ Para realizar el pago del plan (por 100 dolares) puede usar los siguientes metodos.
@@ -32,7 +32,7 @@ paymentTrue_text = """
 > Invitado por: {}
 """
 
-@kaino.message_handler(existing_user=True, membership=False, commands=['membership'])
+@kaino.message_handler(existing_user=True, check_txn=False, membership=False, commands=['membership'])
 async def membership(message, data):
     user = data["user"]
     currency = "USDT.TRC20"
@@ -41,7 +41,14 @@ async def membership(message, data):
     await identifiership_update(message.from_user.username, txn)
     URL_QR=payment["result"]["qrcode_url"]
     URL_CHECK=payment["result"]["checkout_url"]
+    await txn_link(message.from_user.username, URL_CHECK)
     await kaino.reply_to(message, payment_text.format(URL_QR=URL_QR, URL_CHECK=URL_CHECK), parse_mode="html", disable_web_page_preview=True)
+
+@kaino.message_handler(existing_user=True, membership=False, commands=['cancel'])
+async def cancel_link_membership(message):
+    if await cancel_link(message.from_user.username):
+       await kaino.reply_to(message, "🦉 El link ha sido eliminado con exito! Por favor, para generar uno nuevo utiliza; /membership")
+
 
 @kaino.message_handler(existing_user=True, membership=False, commands=['accepting'])
 async def accepting(message, data):
