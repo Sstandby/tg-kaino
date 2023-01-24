@@ -1,5 +1,6 @@
 from bot import kaino
 from bot import commands_IsBinance, commands_private, commands_IsMembership
+from bot.common.db.users import get_txn_link
 
 notExistingUser_text = """
 ✎ No puedes usar este comando, por favor, usa /register para registrar tu usuario en la base de datos y poder usar este comando.
@@ -17,6 +18,15 @@ membershipCommandFalse_text = """
 ✎ Para usar este comando debe pagar la membresia mediante el comando; /membership
 """
 
+txnLinkInfoTrue_text = """
+✎ Ha ejecutado <b>por segunda vez</b> el comando; /membership
+✎ por lo que tiene un pago pendiente, por favor, verifique
+✎ el siguiente link que se genero con anterioridad: <a href="{}">Checkout.</a>
+
+
+🦉 Recuerde usar el comando /accepting una vez que haya pagado con exito.
+🦉 En caso de que se te haya acabado el tiempo para pagar usa el siguiente comando; /cancel
+"""
 
 @kaino.message_handler(existing_user=False, commands=commands_IsBinance)
 async def not_is_user(message):
@@ -32,6 +42,12 @@ async def membership_desactivated(message):
     """
     await kaino.reply_to(message, membershipCommandFalse_text)
 
+@kaino.message_handler(membership=False, check_txn=True, commands=['membership'])
+async def txn_link_active(message):
+    """
+    Message except if membership is desactivated
+    """
+    await kaino.reply_to(message, txnLinkInfoTrue_text.format(await get_txn_link(message.from_user.username)), parse_mode="html", disable_web_page_preview=True)
 
 @kaino.message_handler(membership=True, commands=['membership', 'accepting'])
 async def membership_active(message):

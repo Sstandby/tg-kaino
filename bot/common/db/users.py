@@ -238,6 +238,63 @@ async def existing_user(user: str) -> bool:
         if db.is_connected():
             await db.disconnect()
 
+async def txn_link(user: str, link: str):
+    try:
+        await db.connect()
+        await db.membership.update(
+            where={
+                'username': user,
+                },
+            data={
+                'txnLink': link,
+                }
+            )
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
+async def cancel_link(user: str):
+    try:
+        await db.connect()
+        await db.membership.update(
+            where={
+                'username': user,
+                },
+            data={
+                'txnLink': None,
+                }
+            )
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
+async def get_txn_link(user: str) -> str:
+    try:
+        await db.connect()
+        link = await db.membership.find_unique(
+            where={
+                'username': user,
+                },
+            )
+        return link.txnLink
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
+async def check_txn_link(user: str) -> bool:
+    """detect if the telegram user is an existing txn in the db"""
+    try:
+        await db.connect()
+        membership = await db.membership.find_unique(
+            where={
+                'username': user,
+                }
+            )
+        if membership.txnLink: return True
+        return False
+    finally:
+        if db.is_connected():
+            await db.disconnect()
 
 async def membership(user: str) -> bool:
     """detect if membership is activated"""
