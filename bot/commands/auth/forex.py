@@ -7,7 +7,7 @@ user_text = """
 ⸙͎ Para realizar este registro digite la
 ⸙͎ información que se le pedira hasta completar su registro para FOREX.
 
-⊱ Digite su usuario, por favor.
+⊱ Digite su ID de usuario, por favor.
 """
 
 server_text = """
