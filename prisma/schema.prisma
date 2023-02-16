@@ -21,6 +21,7 @@ model User {
   username         String   @unique
   wallet           Wallet?
   membership       Membership?
+  forex            Forex?
   created_at       DateTime @default(now())
   updated_at       DateTime @updatedAt
 }
