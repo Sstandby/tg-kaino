@@ -37,6 +37,16 @@ model Wallet {
   password         String?
 }
 
+model Forex  {
+  userForex        String   @unique
+  server           String
+  password         String
+  username         String   @unique
+  user             User     @relation(fields: [username], references: [username])
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+}
+
 model Membership  {
   active           Boolean? @default(false)
   identifiership   String?  @unique
