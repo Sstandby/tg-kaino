@@ -254,6 +254,21 @@ async def existing_user(user: str) -> bool:
         if db.is_connected():
             await db.disconnect()
 
+async def get_existing_forex(user: str) -> bool:
+    """detect if the telegram user is an existing user in the db"""
+    try:
+        await db.connect()
+        user = await db.forex.find_unique(
+            where={
+                'username': user,
+                }
+            )
+        if user: return True
+        return False
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
 async def txn_link(user: str, link: str):
     try:
         await db.connect()
