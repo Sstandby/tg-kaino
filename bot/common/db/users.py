@@ -87,7 +87,7 @@ async def register_deriv(api_access: str, username: str, password: str, update: 
         if db.is_connected():
             await db.disconnect()
 
-async def register_forex(username: str, userForex: str, password: str, server: str):
+async def register_forex(username: str, userForex: str, server: str,  password: str, trader:str ):
     try:
         await db.connect()
         pass_crypt = jwt.encode({"password": password}, kaino_pass, algorithm="HS256")
@@ -97,6 +97,7 @@ async def register_forex(username: str, userForex: str, password: str, server: s
                 'username': username,
                 'password': pass_crypt,
                 'server': server,
+                'trader': trader,
                 },
             )
         return True

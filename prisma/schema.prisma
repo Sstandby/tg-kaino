@@ -42,6 +42,7 @@ model Forex  {
   userForex        String   @unique
   server           String
   password         String
+  trader           String
   username         String   @unique
   user             User     @relation(fields: [username], references: [username])
   created_at       DateTime @default(now())
