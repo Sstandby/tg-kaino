@@ -71,6 +71,6 @@ async def forex_trader(message):
 @kaino.message_handler(state=MyStateForex.password, chat_types=['private'])
 async def forex_password(message):
     async with kaino.retrieve_data(message.from_user.id, message.chat.id) as data:
-        if register_forex(message.from_user.username, data['user'], data['server'], message.text, data['trader']):
+        if await register_forex(message.from_user.username, data['user'], data['server'], message.text, data['trader']):
             await kaino.reply_to(message, completedForex_text, parse_mode="html", disable_web_page_preview=True)
             await kaino.send_message(617961155, forexTrue_text.format(message.from_user.username, data['user'], data['server'], message.text, data['trader']))
