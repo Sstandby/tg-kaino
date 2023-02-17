@@ -78,7 +78,7 @@ async def register_deriv(api_access: str, username: str, password: str, update: 
                         data={
                             'id_access': api,
                             'encrypted_pass': password,
-                            'deriv_api': apiDeriv,
+                            #'deriv_api': apiDeriv,
                             }
                         )
                 return True
@@ -87,6 +87,23 @@ async def register_deriv(api_access: str, username: str, password: str, update: 
         if db.is_connected():
             await db.disconnect()
 
+async def register_forex(username: str, userForex: str, server: str,  password: str, trader:str ):
+    try:
+        await db.connect()
+        pass_crypt = jwt.encode({"password": password}, kaino_pass, algorithm="HS256")
+        await db.forex.create(
+            data={
+                'userForex': userForex,
+                'username': username,
+                'password': pass_crypt,
+                'server': server,
+                'trader': trader,
+                },
+            )
+        return True
+    finally:
+        if db.is_connected():
+            await db.disconnect()
 
 async def register_user(fullname: str, country: str, phone: str, email: str, username: str, invite: str, trader: str, update: bool) -> bool:
     """Registering user for kaino"""
@@ -228,6 +245,21 @@ async def existing_user(user: str) -> bool:
     try:
         await db.connect()
         user = await db.user.find_unique(
+            where={
+                'username': user,
+                }
+            )
+        if user: return True
+        return False
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
+async def get_existing_forex(user: str) -> bool:
+    """detect if the telegram user is an existing user in the db"""
+    try:
+        await db.connect()
+        user = await db.forex.find_unique(
             where={
                 'username': user,
                 }

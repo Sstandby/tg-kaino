@@ -8,6 +8,7 @@ from bot.common import importdir
 from telebot.async_telebot import asyncio_filters
 from bot.common.filters.admin_filter import IsAdmin
 from bot.common.filters.user_filter import IsUserDB, IsMembership, CheckTxnLink
+from bot.common.filters.forex_filter import IsForexDB
 from bot.common.handlers.user_middleware import UserDBMiddlware, StateDeleteMiddlware
 from bot.common.handlers.binance_middleware import BinanceClientMiddleware
 from bot.common.handlers.antiflood_middleware import AntiFloodMiddleware
@@ -30,6 +31,7 @@ kaino.add_custom_filter(asyncio_filters.StateFilter(kaino))
 kaino.add_custom_filter(asyncio_filters.IsDigitFilter())
 kaino.add_custom_filter(IsAdmin())
 kaino.add_custom_filter(IsUserDB())
+kaino.add_custom_filter(IsForexDB())
 kaino.add_custom_filter(IsMembership())
 kaino.add_custom_filter(CheckTxnLink())
 kaino.setup_middleware(BinanceClientMiddleware())

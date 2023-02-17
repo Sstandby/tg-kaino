@@ -33,6 +33,7 @@ Los comandos de los que actualmente tenemos son los siguientes.
 📌 /start: Selección de pago y/o información sobre comandos.
 📌 /deriv: Resgitrar tu cuenta de DERIV de MT5
 📌 /binance: Registro de token de LECTURA a operar.
+📌 /forex: Registrar tu cuenta para forex, no se requiere pagar membresia.
 📌 /membership: Inicio de pago de la membresia, una vez que pague espere 3m para utilizar /accepting.
 📌 /register: Registrar tu cuenta e información necesaria para operar.
 """
@@ -40,7 +41,7 @@ Los comandos de los que actualmente tenemos son los siguientes.
 class MyStateInfo(StatesGroup):
     option = State()
 
-@kaino.message_handler(commands=['start'])
+@kaino.message_handler(commands=['start', 'help'])
 async def start(message):
     markup = ReplyKeyboardMarkup(one_time_keyboard=True, input_field_placeholder="Selecciona alguna de las opciónes")
     markup.add("Membership","Help")
