@@ -1,6 +1,6 @@
 from datetime import date
 from bot import kaino, clientPayment
-from bot.common.db.users import identifiership_update, membership_update, txn_link, cancel_link
+from bot.common.db.payments import identifiership_update, membership_update, txn_link, cancel_link
 
 payment_text = """
 ✎ Para realizar el pago del plan (por 100 dolares) puede usar los siguientes metodos.

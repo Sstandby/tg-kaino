@@ -1,6 +1,6 @@
 from bot import kaino
 from bot import commands_IsBinance, commands_private, commands_IsMembership
-from bot.common.db.users import get_txn_link
+from bot.common.db.payments import get_txn_link
 
 notExistingUser_text = """
 ✎ No puedes usar este comando, por favor, usa /register para registrar tu usuario en la base de datos y poder usar este comando.

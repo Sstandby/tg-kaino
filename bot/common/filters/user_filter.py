@@ -1,6 +1,7 @@
 import telebot
 from telebot.asyncio_filters import SimpleCustomFilter
-from bot.common.db.users import existing_user, check_txn_link, membership
+from bot.common.db.users import existing_user
+from bot.common.db.payments import check_txn_link, membership
 
 class IsUserDB(SimpleCustomFilter):
     key='existing_user'
