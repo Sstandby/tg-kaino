@@ -123,3 +123,20 @@ async def identifiership_update(user: str, item: str) -> bool:
     finally:
         if db.is_connected():
             await db.disconnect()
+
+async def tmp_identifiership_update(user: str, item: str) -> bool:
+    try:
+        await db.connect()
+        user = await db.membership.update(
+            where={
+                'username': user,
+                },
+            data={
+                'identifiership': item,
+                }
+            )
+        if user: return True
+        return False
+    finally:
+        if db.is_connected():
+            await db.disconnect()

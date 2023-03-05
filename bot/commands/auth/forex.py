@@ -42,7 +42,7 @@ class MyStateForex(StatesGroup):
     password = State()
     trader = State()
 
-@kaino.message_handler(existing_forex=False, commands=['forex'], chat_types=['private'])
+@kaino.message_handler(existing_forex=True, membership=True, commands=['forex'], chat_types=['private'])
 async def forex_command(message):
     await kaino.set_state(message.from_user.id, MyStateForex.user, message.chat.id)
     await kaino.reply_to(message, user_text, parse_mode="html")

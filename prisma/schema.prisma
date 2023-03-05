@@ -39,22 +39,26 @@ model Wallet {
 }
 
 model Forex  {
+  owner            String
   userForex        String   @unique
   server           String
   password         String
   trader           String
-  username         String   @unique
-  user             User     @relation(fields: [username], references: [username])
+  identifiership   String   @unique
+  user             User     @relation(fields: [owner], references: [username])
   created_at       DateTime @default(now())
   updated_at       DateTime @updatedAt
 }
 
 model Membership  {
-  active           Boolean? @default(false)
-  identifiership   String?  @unique
-  txnLink          String?
-  username         String   @unique
-  user             User     @relation(fields: [username], references: [username])
-  created_at       DateTime @default(now())
-  updated_at       DateTime @updatedAt
+  active            Boolean? @default(false)
+  txnLink           String?
+  username          String   @unique
+  freeForex         Int?     @default(1)
+  accountsForex     Forex[]
+  identifiership    String?  @unique
+  tmp               String   @unique
+  user              User     @relation(fields: [username], references: [username])
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
 }

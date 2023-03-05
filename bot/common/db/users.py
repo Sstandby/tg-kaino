@@ -87,18 +87,40 @@ async def register_deriv(api_access: str, username: str, password: str, update: 
 
 async def register_forex(username: str, userForex: str, server: str,  password: str, trader:str ):
     try:
+
         await db.connect()
         pass_crypt = jwt.encode({"password": password}, kaino_pass, algorithm="HS256")
-        await db.forex.create(
-            data={
+
+        identifiership = await db.membership.find_unique(
+            where={
+                'username': username,
+                }
+            ).tmp
+
+        account = await db.forex.create(
+            data = {
                 'userForex': userForex,
                 'username': username,
                 'password': pass_crypt,
+                'identifiership': identifiership,
                 'server': server,
                 'trader': trader,
                 },
             )
+
+        await db.membership.update(
+                where = {
+                    'username': username,
+                    },
+                data = {
+                    'accountsForex': {
+                        'connect': [account]
+                        },
+                    },
+                )
+
         return True
+
     finally:
         if db.is_connected():
             await db.disconnect()
@@ -148,6 +170,50 @@ async def register_user(fullname: str, country: str, phone: str, email: str, use
                         )
                 return True
             return False
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
+async def summary_account_forex(username: str, freeForex: int):
+    try:
+        await db.connect()
+        user = await db.membership.update(
+            where={
+                'username': username,
+                },
+            data={
+                'freeForex': freeForex,
+                },
+            )
+        return user
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
+async def get_forex_account_numbers(user: str) -> int:
+    try:
+        await db.connect()
+        accounts = await db.membership.find_unique(
+            where={
+                'username': user,
+                }
+            )
+        return accounts.freeForex
+    finally:
+        if db.is_connected():
+            await db.disconnect()
+
+async def get_existing_forex(user: str) -> bool:
+    try:
+        await db.connect()
+        verfy = await db.membership.find_unique(
+            where={
+                'username': user,
+                }
+            )
+        if verfy.freeForex >= 1:
+           return True
+        return False
     finally:
         if db.is_connected():
             await db.disconnect()
@@ -229,21 +295,6 @@ async def existing_user(user: str) -> bool:
     try:
         await db.connect()
         user = await db.user.find_unique(
-            where={
-                'username': user,
-                }
-            )
-        if user: return True
-        return False
-    finally:
-        if db.is_connected():
-            await db.disconnect()
-
-async def get_existing_forex(user: str) -> bool:
-    """detect if the telegram user is an existing user in the db"""
-    try:
-        await db.connect()
-        user = await db.forex.find_unique(
             where={
                 'username': user,
                 }
