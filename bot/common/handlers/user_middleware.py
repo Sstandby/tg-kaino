@@ -1,6 +1,6 @@
 from bot import kaino
 from bot import commands_GetInfoMembership, commands_all
-from bot.common.db.users import get_user_info, get_membership_info
+from bot.common.db.users import get_user_info
 from bot.common.db.payments import get_membership_info
 from telebot.handler_backends import BaseMiddleware
 from telebot.asyncio_handler_backends import State
