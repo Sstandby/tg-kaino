@@ -21,7 +21,6 @@ model User {
   username         String   @unique
   wallet           Wallet?
   membership       Membership?
-  forex            Forex?
   created_at       DateTime @default(now())
   updated_at       DateTime @updatedAt
 }
@@ -39,15 +38,16 @@ model Wallet {
 }
 
 model Forex  {
-  owner            String
-  userForex        String   @unique
+
+  username         String
+  userForex        String     @unique
   server           String
   password         String
   trader           String
-  identifiership   String   @unique
-  user             User     @relation(fields: [owner], references: [username])
-  created_at       DateTime @default(now())
-  updated_at       DateTime @updatedAt
+  identifiership   String     @unique
+  user             Membership @relation(fields: [username], references: [username])
+  created_at       DateTime   @default(now())
+  updated_at       DateTime   @updatedAt
 }
 
 model Membership  {
